@@ -4,25 +4,17 @@
  * @module Chartist.Svg
  */
 /* global Chartist */
-(function(window, document, Chartist) {
+(function(globalRoot, Chartist) {
   'use strict';
 
-  var svgNs = 'http://www.w3.org/2000/svg',
-    xmlNs = 'http://www.w3.org/2000/xmlns/',
-    xhtmlNs = 'http://www.w3.org/1999/xhtml';
-
-  Chartist.xmlNs = {
-    qualifiedName: 'xmlns:ct',
-    prefix: 'ct',
-    uri: 'http://gionkunz.github.com/chartist-js/ct'
-  };
+  var document = globalRoot.document;
 
   /**
    * Chartist.Svg creates a new SVG object wrapper with a starting element. You can use the wrapper to fluently create sub-elements and modify them.
    *
    * @memberof Chartist.Svg
    * @constructor
-   * @param {String|SVGElement} name The name of the SVG element to create or an SVG dom element which should be wrapped into Chartist.Svg
+   * @param {String|Element} name The name of the SVG element to create or an SVG dom element which should be wrapped into Chartist.Svg
    * @param {Object} attributes An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added.
    * @param {String} className This class or class list will be added to the SVG element
    * @param {Object} parent The parent SVG wrapper object where this newly created wrapper and it's element will be attached to as child
@@ -30,30 +22,32 @@
    */
   function Svg(name, attributes, className, parent, insertFirst) {
     // If Svg is getting called with an SVG element we just return the wrapper
-    if(name instanceof SVGElement) {
+    if(name instanceof Element) {
       this._node = name;
     } else {
-      this._node = document.createElementNS(svgNs, name);
+      this._node = document.createElementNS(Chartist.namespaces.svg, name);
 
       // If this is an SVG element created then custom namespace
       if(name === 'svg') {
-        this._node.setAttributeNS(xmlNs, Chartist.xmlNs.qualifiedName, Chartist.xmlNs.uri);
+        this.attr({
+          'xmlns:ct': Chartist.namespaces.ct
+        });
       }
+    }
 
-      if(attributes) {
-        this.attr(attributes);
-      }
+    if(attributes) {
+      this.attr(attributes);
+    }
 
-      if(className) {
-        this.addClass(className);
-      }
+    if(className) {
+      this.addClass(className);
+    }
 
-      if(parent) {
-        if (insertFirst && parent._node.firstChild) {
-          parent._node.insertBefore(this._node, parent._node.firstChild);
-        } else {
-          parent._node.appendChild(this._node);
-        }
+    if(parent) {
+      if (insertFirst && parent._node.firstChild) {
+        parent._node.insertBefore(this._node, parent._node.firstChild);
+      } else {
+        parent._node.appendChild(this._node);
       }
     }
   }
@@ -63,7 +57,7 @@
    *
    * @memberof Chartist.Svg
    * @param {Object|String} attributes An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added. If this parameter is a String then the function is used as a getter and will return the attribute value.
-   * @param {String} ns If specified, the attributes will be set as namespace attributes with ns as prefix.
+   * @param {String} [ns] If specified, the attribute will be obtained using getAttributeNs. In order to write namepsaced attributes you can use the namespace:attribute notation within the attributes object.
    * @return {Object|String} The current wrapper object will be returned so it can be used for chaining or the attribute value if used as getter function.
    */
   function attr(attributes, ns) {
@@ -81,8 +75,9 @@
         return;
       }
 
-      if(ns) {
-        this._node.setAttributeNS(ns, [Chartist.xmlNs.prefix, ':', key].join(''), attributes[key]);
+      if (key.indexOf(':') !== -1) {
+        var namespacedAttribute = key.split(':');
+        this._node.setAttributeNS(Chartist.namespaces[namespacedAttribute[0]], key, attributes[key]);
       } else {
         this._node.setAttribute(key, attributes[key]);
       }
@@ -108,6 +103,7 @@
   /**
    * Returns the parent Chartist.SVG wrapper object
    *
+   * @memberof Chartist.Svg
    * @return {Chartist.Svg} Returns a Chartist.Svg wrapper around the parent node of the current node. If the parent node is not existing or it's not an SVG node then this function will return null.
    */
   function parent() {
@@ -117,6 +113,7 @@
   /**
    * This method returns a Chartist.Svg wrapper around the root SVG element of the current tree.
    *
+   * @memberof Chartist.Svg
    * @return {Chartist.Svg} The root SVG element wrapped in a Chartist.Svg element
    */
   function root() {
@@ -130,6 +127,7 @@
   /**
    * Find the first child SVG element of the current element that matches a CSS selector. The returned object is a Chartist.Svg wrapper.
    *
+   * @memberof Chartist.Svg
    * @param {String} selector A CSS selector that is used to query for child SVG elements
    * @return {Chartist.Svg} The SVG wrapper for the element found or null if no element was found
    */
@@ -141,12 +139,23 @@
   /**
    * Find the all child SVG elements of the current element that match a CSS selector. The returned object is a Chartist.Svg.List wrapper.
    *
+   * @memberof Chartist.Svg
    * @param {String} selector A CSS selector that is used to query for child SVG elements
    * @return {Chartist.Svg.List} The SVG wrapper list for the element found or null if no element was found
    */
   function querySelectorAll(selector) {
     var foundNodes = this._node.querySelectorAll(selector);
     return foundNodes.length ? new Chartist.Svg.List(foundNodes) : null;
+  }
+
+  /**
+   * Returns the underlying SVG node for the current element.
+   *
+   * @memberof Chartist.Svg
+   * @returns {Node}
+   */
+  function getNode() {
+    return this._node;
   }
 
   /**
@@ -169,7 +178,7 @@
     }
 
     // Adding namespace to content element
-    content.setAttribute('xmlns', xhtmlNs);
+    content.setAttribute('xmlns', Chartist.namespaces.xmlns);
 
     // Creating the foreignObject without required extension attribute (as described here
     // http://www.w3.org/TR/SVG/extend.html#ForeignObjectElement)
@@ -307,25 +316,23 @@
   }
 
   /**
-   * Get element height with fallback to svg BoundingBox or parent container dimensions:
-   * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
+   * Get element height using `getBoundingClientRect`
    *
    * @memberof Chartist.Svg
    * @return {Number} The elements height in pixels
    */
   function height() {
-    return this._node.clientHeight || Math.round(this._node.getBBox().height) || this._node.parentNode.clientHeight;
+    return this._node.getBoundingClientRect().height;
   }
 
   /**
-   * Get element width with fallback to svg BoundingBox or parent container dimensions:
-   * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
+   * Get element width using `getBoundingClientRect`
    *
    * @memberof Chartist.Core
    * @return {Number} The elements width in pixels
    */
   function width() {
-    return this._node.clientWidth || Math.round(this._node.getBBox().width) || this._node.parentNode.clientWidth;
+    return this._node.getBoundingClientRect().width;
   }
 
   /**
@@ -411,7 +418,7 @@
 
           // In guided mode we also set begin to indefinite so we can trigger the start manually and put the begin
           // which needs to be in ms aside
-          timeout = Chartist.stripUnit(animationDefinition.begin || 0);
+          timeout = Chartist.quantity(animationDefinition.begin || 0).value;
           animationDefinition.begin = 'indefinite';
         }
 
@@ -488,6 +495,7 @@
     root: root,
     querySelector: querySelector,
     querySelectorAll: querySelectorAll,
+    getNode: getNode,
     foreignObject: foreignObject,
     text: text,
     empty: empty,
@@ -511,7 +519,7 @@
    * @return {Boolean} True of false if the feature is supported or not
    */
   Chartist.Svg.isSupported = function(feature) {
-    return document.implementation.hasFeature('www.http://w3.org/TR/SVG11/feature#' + feature, '1.1');
+    return document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#' + feature, '1.1');
   };
 
   /**
@@ -589,4 +597,4 @@
   Chartist.Svg.List = Chartist.Class.extend({
     constructor: SvgList
   });
-}(window, document, Chartist));
+}(this || global, Chartist));

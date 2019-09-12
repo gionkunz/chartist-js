@@ -12,9 +12,11 @@ function evalChartistCode(code, chartElement) {
   // Remove any declaration of $chart as we are passing $chart to our function eval
   modified = modified.replace(/var \$chart.+;/, '');
 
+  var $chartElement = $(chartElement).empty();
+
   try {
     // Create function from the modified code and execute it
-    return (new Function(['chartElement', '$chart'], modified)(chartElement, $(chartElement))); // jshint ignore:line
+    return (new Function(['chartElement', '$chart'], modified)(chartElement, $chartElement)); // jshint ignore:line
   } catch(err) {
     // Maybe show error in the future
   }

@@ -11,6 +11,35 @@ sections:
           intro: An example of a simple line chart with three series. You can edit this example in realtime.
       - type: live-example
         data:
+          title: Holes in data
+          level: 4
+          id: example-line-data-holes
+          classes: ct-golden-section
+          intro: >
+                   Chartist does not freak out if you have holes in your data. Instead it will render the lines in
+                   segments and handles these holes gracefully. This also allows you to introduce a line at a later
+                   point or to terminate the series before others.
+      - type: live-example
+        data:
+          title: Filled holes in data
+          level: 4
+          id: example-line-data-fill-holes
+          classes: ct-golden-section
+          intro: >
+                   Sometimes you don't want your data looking so fragmented, even when it really is.  That's why you
+                   can also configure Chartist to smooth over holes in your data.
+      - type: live-example
+        data:
+          title: Only whole numbers
+          level: 4
+          id: example-line-only-integer
+          classes: ct-golden-section
+          intro: >
+                   You're dealing with series that contain only whole numbers? It looks weird that Chartist is creating
+                   a scale that contains fractions even if your data does not? No problem! Tell the Chartist guy to
+                   only use integers and he'll do the math!
+      - type: live-example
+        data:
           title: Line scatter diagram with responsive settings
           level: 4
           id: line-scatter-random
@@ -19,16 +48,6 @@ sections:
                    This advanced example uses a line chart to draw a scatter diagram. The data object is created
                    with a functional style random mechanism. There is a mobile first responsive configuration using
                    the responsive options to show less labels on small screens.
-      - type: live-example
-        data:
-          title: Line chart with tooltips
-          level: 4
-          id: behavior-with-jquery
-          classes: ct-golden-section
-          intro: >
-                   Adding behavior to your chart with JavaScript is a breeze and is just like any other DOM manipulation
-                   you do to your site. This is just one of many benefits of using inline-SVG and provides you with the
-                   freedom you need in order to create exactly the experience you're looking for.
       - type: live-example
         data:
           title: Line chart with area
@@ -90,6 +109,28 @@ sections:
                    things in Chartist, this can be customized easily! Check out
                    <a href="api-documentation.html#module-chartistinterpolation">the API Documentation</a> for more
                    smoothing options.
+      - type: live-example
+        data:
+          title: Series Overrides
+          level: 4
+          id: example-line-series-override
+          classes: ct-golden-section
+          intro: >
+                   By naming your series using the series object notation with a name property, you can enable the
+                   individual configuration of series specific settings. <code>showLine</code>, <code>showPoint</code>,
+                   <code>showArea</code> and even the smoothing function can be overriden per series! And guess what?
+                   You can even override those series settings in the responsive configuration! Check the example code
+                   for more details.
+      - type: live-example
+        data:
+          title: Time Series with Moment.js
+          level: 4
+          id: example-timeseries-moment
+          classes: ct-golden-section
+          intro: >
+                   This example uses <a href="http://momentjs.com/">Moment.js</a> in the label interpolation function 
+                   to format a date object. The fixed axis ensures that there is correct spacing between the data points, 
+                   and the number of labels is determined by the divisor.
   - title: Bar chart examples
     level: 3
     items:
@@ -100,7 +141,7 @@ sections:
           id: bi-polar-bar-interpolated
           classes: ct-golden-section
           intro: >
-                    A bi-plar bar chart with a range limit set with low and high. There is also an interpolation
+                    A bi-polar bar chart with a range limit set with low and high. There is also an interpolation
                     function used to skip every odd grid line / label.
       - type: live-example
         data:
@@ -128,7 +169,7 @@ sections:
           classes: ct-golden-section
           intro: >
                     Chartist will figure out if your browser supports foreignObject and it will use them to create labels
-                    that re based on regular HTML text elements. Multi-line and regular CSS styles are just two of many
+                    that are based on regular HTML text elements. Multi-line and regular CSS styles are just two of many
                     benefits while using foreignObjects!
       - type: live-example
         data:
@@ -157,6 +198,26 @@ sections:
           intro: >
                     As all settings of a chart can be customized with the responsive configuration override mechanism of
                     Chartist, you can create a chart that adopts to every media condition!
+      - type: live-example
+        data:
+          title: Distributed series
+          level: 4
+          id: example-bar-distributed-series
+          classes: ct-golden-section
+          intro: >
+                    Sometime it's desired to have bar charts that show one bar per series distributed along the x-axis. If
+                    this option is enabled, you need to make sure that you pass a single series array to Chartist that
+                    contains the series values. In this example you can see T-shirt sales of a store categorized by size.
+      - type: live-example
+        data:
+          title: Label placement
+          level: 4
+          id: example-bar-label-position
+          classes: ct-golden-section
+          intro: >
+                    You can change the position of the labels on line and bar charts easily by using the <code>position</code>
+                    option inside of the axis configuration.
+
   - title: Pie chart examples
     level: 3
     items:
@@ -185,3 +246,29 @@ sections:
           id: simple-gauge-chart
           classes: ct-golden-section ct-negative-labels
           intro: This pie chart uses donut, startAngle and total to draw a gauge chart.
+
+      - type: live-example
+        data:
+          title: Animating a Donut with Svg.animate
+          level: 4
+          id: example-donut-animation
+          classes: ct-golden-section
+          intro: >
+                    Although it'd be also possible to achieve this animation with CSS, with some minor suboptimal
+                    things, here's an example of how to animate donut charts using Chartist.Svg.animate and SMIL.
+
+      - type: live-example
+        data:
+          title: Donut chart using fill rather than stroke
+          level: 4
+          id: example-donut-solid-chart
+          classes: ct-golden-section ct-negative-labels
+          intro: This pie chart uses donut and donutSolid to draw a donut chart.
+
+      - type: live-example
+        data:
+          title: Gauge chart using fill rather than stroke
+          level: 4
+          id: example-gauge-donut-solid-chart
+          classes: ct-golden-section ct-negative-labels
+          intro: This pie chart uses total, startAngle, donut and donutSolid to draw a gauge chart.
