@@ -242,7 +242,7 @@ sections:
               - '<a href="https://github.com/gruberb/chartistAngularDirective" target="_blank">chartistAngularDirective.js</a>'
               - Angular Directive
             -
-              - '<a href="https://fraserxu.me/react-chartist" target="_blank">react-chartist</a>'
+              - '<a href="https://github.com/fraserxu/react-chartist" target="_blank">react-chartist</a>'
               - React Component
             -
               - '<a href="https://github.com/mfpierre/meteor-chartist-js" target="_blank">meteor-chartist-js</a>'
